@@ -1,0 +1,7 @@
+COMPROBANTE DE RESERVA #1
+Cliente: Ana Vargas
+Sala: Sala Pequena
+Fecha: 03/11/2026 de 9:00 por 3 horas
+Subtotal: 51000
+Impuesto: 6630,00
+TOTAL: 57630,00

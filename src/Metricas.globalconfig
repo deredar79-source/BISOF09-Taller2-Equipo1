@@ -1,0 +1,3 @@
+is_global = true
+# Muestra la complejidad ciclomática de cada método al compilar (regla CA1502).
+dotnet_diagnostic.CA1502.severity = warning
