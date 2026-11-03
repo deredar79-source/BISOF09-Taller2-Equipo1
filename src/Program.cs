@@ -4,7 +4,13 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        GestorReservas gestor = new GestorReservas();
+        GestorReservas gestor = new GestorReservas(new IFormatoComprobante[]
+        {
+            new FormatoTexto(),
+            new FormatoHtml(),
+            new FormatoJson(),
+            new FormatoXml()
+        });
         gestor.CargarDatosIniciales();
 
         DateTime martes = ProximoDiaDeSemana(DayOfWeek.Tuesday);
@@ -31,6 +37,7 @@ public class Program
         Console.WriteLine(gestor.ReporteDelDia(martes, "TEXTO"));
         Console.WriteLine();
         Console.WriteLine(gestor.EnviarComprobante(1, "TEXTO"));
+        Console.WriteLine(gestor.CrearReserva(1, 1, martes.AddDays(7), 15, 2, false, false, "XML"));
     }
 
     private static DateTime ProximoDiaDeSemana(DayOfWeek dia)

@@ -1,0 +1,25 @@
+@startuml
+class GestorReservas
+
+interface IFormatoComprobante {
+  +Clave : string
+  +GenerarComprobante(reserva, cliente, sala) : string
+  +GenerarVistaPrevia(cliente, sala) : string
+  +GenerarCuerpoCorreo() : string
+  +GenerarReporte(fecha, cantidad, totalDia) : string
+  +ObtenerExtension() : string
+}
+
+class FormatoTexto
+class FormatoHtml
+class FormatoJson
+class FormatoXml
+class FormatoDesconocido
+
+GestorReservas o-- "1..*" IFormatoComprobante : formatosComprobante
+IFormatoComprobante <|.. FormatoTexto
+IFormatoComprobante <|.. FormatoHtml
+IFormatoComprobante <|.. FormatoJson
+IFormatoComprobante <|.. FormatoXml
+IFormatoComprobante <|.. FormatoDesconocido
+@enduml

@@ -11,6 +11,23 @@ public class GestorReservas
 
     private string archivoReservas = "reservas.csv";
     private string archivoComprobantes = "comprobantes";
+    private readonly IReadOnlyDictionary<string, IFormatoComprobante> formatosComprobante;
+    private readonly IFormatoComprobante formatoDesconocido = new FormatoDesconocido();
+
+    public GestorReservas(IEnumerable<IFormatoComprobante> formatos = null)
+    {
+        formatos ??= new IFormatoComprobante[]
+        {
+            new FormatoTexto(),
+            new FormatoHtml(),
+            new FormatoJson(),
+            new FormatoXml()
+        };
+        formatosComprobante = formatos.ToDictionary(formato => formato.Clave, StringComparer.Ordinal);
+    }
+
+    private IFormatoComprobante ObtenerFormato(string formatoComprobante) =>
+        formatosComprobante.GetValueOrDefault(formatoComprobante ?? string.Empty, formatoDesconocido);
 
     public void CargarDatosIniciales()
     {
@@ -177,44 +194,11 @@ public class GestorReservas
         File.AppendAllText(archivoReservas, linea + Environment.NewLine);
 
         // ---- comprobante ----
-        string comprobante = "";
-        switch (formatoComprobante)
-        {
-            case "TEXTO":
-                comprobante = "COMPROBANTE DE RESERVA #" + reserva.Id + "\n" +
-                              "Cliente: " + cliente.Nombre + "\n" +
-                              "Sala: " + sala.Nombre + "\n" +
-                              "Fecha: " + reserva.Fecha.ToString("dd/MM/yyyy") + " de " + reserva.HoraInicio + ":00 por " + reserva.Horas + " horas\n" +
-                              "Subtotal: " + reserva.Subtotal + "\n" +
-                              "Impuesto: " + reserva.Impuesto + "\n" +
-                              "TOTAL: " + reserva.Total;
-                break;
-            case "HTML":
-                comprobante = "<div class='comprobante'><h1>Reserva #" + reserva.Id + "</h1>" +
-                              "<p>Cliente: " + cliente.Nombre + "</p>" +
-                              "<p>Sala: " + sala.Nombre + "</p>" +
-                              "<p>Fecha: " + reserva.Fecha.ToString("dd/MM/yyyy") + "</p>" +
-                              "<p>Total: " + reserva.Total + "</p></div>";
-                break;
-            case "JSON":
-                comprobante = "{\"id\":" + reserva.Id + ",\"cliente\":\"" + cliente.Nombre + "\"," +
-                              "\"sala\":\"" + sala.Nombre + "\",\"total\":" + reserva.Total + "}";
-                break;
-            default:
-                comprobante = "ERROR: formato de comprobante desconocido";
-                break;
-        }
+        IFormatoComprobante estrategiaFormato = ObtenerFormato(formatoComprobante);
+        string comprobante = estrategiaFormato.GenerarComprobante(reserva, cliente, sala);
 
         if (!Directory.Exists(archivoComprobantes)) { Directory.CreateDirectory(archivoComprobantes); }
-        string extension = "";
-        switch (formatoComprobante)
-        {
-            case "TEXTO": extension = ".txt"; break;
-            case "HTML": extension = ".html"; break;
-            case "JSON": extension = ".json"; break;
-            default: extension = ".txt"; break;
-        }
-        File.WriteAllText(Path.Combine(archivoComprobantes, "reserva-" + reserva.Id + extension), comprobante);
+        File.WriteAllText(Path.Combine(archivoComprobantes, "reserva-" + reserva.Id + estrategiaFormato.ObtenerExtension()), comprobante);
 
         return comprobante;
     }
@@ -233,17 +217,7 @@ public class GestorReservas
         }
         if (cliente == null || sala == null) { return "ERROR: datos incompletos"; }
 
-        switch (formatoComprobante)
-        {
-            case "TEXTO":
-                return "VISTA PREVIA\nCliente: " + cliente.Nombre + "\nSala: " + sala.Nombre;
-            case "HTML":
-                return "<div class='previa'><p>" + cliente.Nombre + "</p><p>" + sala.Nombre + "</p></div>";
-            case "JSON":
-                return "{\"cliente\":\"" + cliente.Nombre + "\",\"sala\":\"" + sala.Nombre + "\"}";
-            default:
-                return "ERROR: formato de comprobante desconocido";
-        }
+        return ObtenerFormato(formatoComprobante).GenerarVistaPrevia(cliente, sala);
     }
 
     public string EnviarComprobante(int reservaId, string formatoComprobante)
@@ -261,14 +235,7 @@ public class GestorReservas
             if (Clientes[i].Id == reserva.ClienteId) { cliente = Clientes[i]; }
         }
 
-        string cuerpo = "";
-        switch (formatoComprobante)
-        {
-            case "TEXTO": cuerpo = "Adjunto su comprobante en texto plano."; break;
-            case "HTML": cuerpo = "<p>Adjunto su comprobante.</p>"; break;
-            case "JSON": cuerpo = "{\"mensaje\":\"Adjunto su comprobante\"}"; break;
-            default: cuerpo = "ERROR: formato de comprobante desconocido"; break;
-        }
+        string cuerpo = ObtenerFormato(formatoComprobante).GenerarCuerpoCorreo();
         // Aqui iria el envio real de correo.
         return "Enviado a " + cliente.Correo + ": " + cuerpo;
     }
@@ -286,17 +253,7 @@ public class GestorReservas
             }
         }
 
-        switch (formatoComprobante)
-        {
-            case "TEXTO":
-                return "REPORTE " + fecha.ToString("dd/MM/yyyy") + "\nReservas: " + cantidad + "\nTotal: " + totalDia;
-            case "HTML":
-                return "<h2>Reporte " + fecha.ToString("dd/MM/yyyy") + "</h2><p>Reservas: " + cantidad + "</p><p>Total: " + totalDia + "</p>";
-            case "JSON":
-                return "{\"fecha\":\"" + fecha.ToString("yyyy-MM-dd") + "\",\"reservas\":" + cantidad + ",\"total\":" + totalDia + "}";
-            default:
-                return "ERROR: formato de comprobante desconocido";
-        }
+        return ObtenerFormato(formatoComprobante).GenerarReporte(fecha, cantidad, totalDia);
     }
 
     public string AnularReserva(int reservaId)

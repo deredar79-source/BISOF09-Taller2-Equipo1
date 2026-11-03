@@ -1,0 +1,30 @@
+﻿=== Sistema de reservas de salas de eventos ===
+
+COMPROBANTE DE RESERVA #1
+Cliente: Ana Vargas
+Sala: Sala Pequena
+Fecha: 10/11/2026 de 9:00 por 3 horas
+Subtotal: 51000
+Impuesto: 6630.00
+TOTAL: 57630.00
+
+COMPROBANTE DE RESERVA #2
+Cliente: Constructora del Este
+Sala: Auditorio
+Fecha: 10/11/2026 de 13:00 por 8 horas
+Subtotal: 1652291.20
+Impuesto: 214797.86
+TOTAL: 1867089.06
+
+{"id":3,"cliente":"Diego Mora","sala":"Sala Pequena","total":39052.80}
+
+<div class='comprobante'><h1>Reserva #4</h1><p>Cliente: Hotel La Colina</p><p>Sala: Sala Mediana</p><p>Fecha: 07/11/2026</p><p>Total: 908316.60</p></div>
+
+ERROR: la sala ya esta reservada en ese horario
+
+REPORTE 10/11/2026
+Reservas: 2
+Total: 1924719.06
+
+Enviado a ana@correo.cr: Adjunto su comprobante en texto plano.
+<comprobante><id>5</id><cliente>Ana Vargas</cliente><sala>Sala Pequena</sala><fecha>17/11/2026</fecha><horaInicio>15</horaInicio><horas>2</horas><subtotal>24000</subtotal><impuesto>3120.00</impuesto><total>27120.00</total></comprobante>

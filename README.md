@@ -13,7 +13,7 @@ Administra las reservas de tres salas de eventos:
 - Registra reservas de una sala para una fecha, una hora de inicio y una cantidad de horas.
 - Verifica que la sala esté libre en ese horario.
 - Calcula el precio según el tipo de cliente, la duración, los servicios adicionales y la fecha.
-- Emite el comprobante en tres formatos: texto, HTML y JSON.
+- Emite el comprobante en formatos intercambiables: texto, HTML, JSON y XML.
 - Guarda las reservas en un archivo y los comprobantes en una carpeta.
 - Produce un reporte del día y permite anular una reserva.
 
@@ -35,6 +35,8 @@ src/
   SalaEventos.csproj
   Program.cs           punto de entrada con un escenario de ejemplo
   Modelos.cs           Cliente, Sala, Reserva
+  FormatosComprobante.cs estrategias para generar comprobantes
+  DiagramaEstrategiaComprobante.puml diagrama UML de las estrategias
   GestorReservas.cs    el resto del sistema
 ```
 
@@ -76,15 +78,15 @@ Los montos finales se redondean a dos decimales.
 
 ### Comprobantes
 
-Tres formatos: `TEXTO`, `HTML` y `JSON`. Un formato desconocido produce `ERROR: formato de comprobante desconocido`.
+Formatos: `TEXTO`, `HTML`, `JSON` y `XML`. Un formato desconocido produce `ERROR: formato de comprobante desconocido`.
 
 El comprobante se devuelve al llamador y además se guarda en `comprobantes/reserva-<id>.<extensión>`.
 
 ### Otras operaciones
 
-- `VistaPrevia` genera una versión reducida del comprobante, en los mismos tres formatos.
-- `EnviarComprobante` arma el cuerpo del mensaje, en los mismos tres formatos, y devuelve a quién se enviaría.
-- `ReporteDelDia` cuenta las reservas confirmadas de una fecha y suma sus totales, en los mismos tres formatos.
+- `VistaPrevia` genera una versión reducida del comprobante en los mismos formatos.
+- `EnviarComprobante` arma el cuerpo del mensaje en los mismos formatos y devuelve a quién se enviaría.
+- `ReporteDelDia` cuenta las reservas confirmadas de una fecha y suma sus totales en los mismos formatos.
 - `AnularReserva` marca la reserva como anulada y deja constancia en el archivo.
 
 ---

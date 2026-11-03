@@ -7,4 +7,8 @@
     <RootNamespace>SalaEventos</RootNamespace>
     <AssemblyName>SalaEventos</AssemblyName>
   </PropertyGroup>
+  <ItemGroup>
+    <GlobalAnalyzerConfigFiles Include="Metricas.globalconfig" />
+    <AdditionalFiles Include="CodeMetricsConfig.txt" />
+  </ItemGroup>
 </Project>
