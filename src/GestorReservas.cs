@@ -1,4 +1,4 @@
-namespace SalaEventos;
+ namespace SalaEventos;
 
 // Clase central del sistema. Hace validación, cálculo de precios, persistencia,
 // formato de comprobantes y reportes.
@@ -14,20 +14,13 @@ public class GestorReservas
     private readonly IReadOnlyDictionary<string, IFormatoComprobante> formatosComprobante;
     private readonly IFormatoComprobante formatoDesconocido = new FormatoDesconocido();
 
-    public GestorReservas(IEnumerable<IFormatoComprobante> formatos = null)
+    public GestorReservas(IEnumerable<IFormatoComprobante> formatos)
     {
-        formatos ??= new IFormatoComprobante[]
-        {
-            new FormatoTexto(),
-            new FormatoHtml(),
-            new FormatoJson(),
-            new FormatoXml()
-        };
         formatosComprobante = formatos.ToDictionary(formato => formato.Clave, StringComparer.Ordinal);
     }
 
     private IFormatoComprobante ObtenerFormato(string formatoComprobante) =>
-        formatosComprobante.GetValueOrDefault(formatoComprobante ?? string.Empty, formatoDesconocido);
+        formatosComprobante.GetValueOrDefault(formatoComprobante, formatoDesconocido);
 
     public void CargarDatosIniciales()
     {
