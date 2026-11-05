@@ -3,7 +3,7 @@ using System.Xml.Linq;
 namespace SalaEventos;
 
 // ¿Qué recibe? Los datos de reserva, cliente y sala, o los datos del reporte.
-// ¿Qué devuelve? El contenido del formato solicitado y la extension de archivo.
+// ¿Qué devuelve? El contenido del formato solicitado y la extensión de archivo.
 // ¿Qué garantiza? Representar correctamente los datos con el formato de esta estrategia.
 // ¿Qué promete NO hacer? Modificar la reserva, guardar archivos o enviar correos.
 public interface IFormatoComprobante
