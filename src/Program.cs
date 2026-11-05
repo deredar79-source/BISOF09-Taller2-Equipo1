@@ -4,6 +4,10 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        // Forzar formato regional de Costa Rica globalmente para que los decimales usen coma (,)
+        System.Globalization.CultureInfo.DefaultThreadCurrentCulture = new System.Globalization.CultureInfo("es-CR");
+        System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = new System.Globalization.CultureInfo("es-CR");
+
         GestorReservas gestor = new GestorReservas(new IFormatoComprobante[]
         {
             new FormatoTexto(),
@@ -37,16 +41,13 @@ public class Program
         Console.WriteLine(gestor.ReporteDelDia(martes, "TEXTO"));
         Console.WriteLine();
         Console.WriteLine(gestor.EnviarComprobante(1, "TEXTO"));
-
-        // Descomenta estas dos líneas después de generar salida-despues.txt para probar el reto XML:
-        // Console.WriteLine();
-        // Console.WriteLine(gestor.CrearReserva(1, 1, martes.AddDays(7), 15, 2, false, false, "XML"));
+        Console.WriteLine();
+        Console.WriteLine(gestor.CrearReserva(1, 1, martes.AddDays(7), 15, 2, false, false, "XML"));
     }
 
     private static DateTime ProximoDiaDeSemana(DayOfWeek dia)
     {
-        DateTime f = DateTime.Today.AddDays(1);
-        while (f.DayOfWeek != dia) { f = f.AddDays(1); }
-        return f;
+        int dias = 1 + ((int)dia - (int)DateTime.Today.DayOfWeek - 1 + 7) % 7;
+        return DateTime.Today.AddDays(dias);
     }
 }
