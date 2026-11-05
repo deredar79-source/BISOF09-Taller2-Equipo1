@@ -37,7 +37,10 @@ public class Program
         Console.WriteLine(gestor.ReporteDelDia(martes, "TEXTO"));
         Console.WriteLine();
         Console.WriteLine(gestor.EnviarComprobante(1, "TEXTO"));
-        Console.WriteLine(gestor.CrearReserva(1, 1, martes.AddDays(7), 15, 2, false, false, "XML"));
+
+        // Descomenta estas dos líneas después de generar salida-despues.txt para probar el reto XML:
+        // Console.WriteLine();
+        // Console.WriteLine(gestor.CrearReserva(1, 1, martes.AddDays(7), 15, 2, false, false, "XML"));
     }
 
     private static DateTime ProximoDiaDeSemana(DayOfWeek dia)
